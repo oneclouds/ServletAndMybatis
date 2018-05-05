@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<!--
+注意：
+（1）这里映射文件的约束条件是mybatis-3-mapper.dtd" ，而全局配置文件SqlMapConfig.xml中的
+约束条件是mybatis-3-config.dtd
+（2）namespace 命名空间，作用就是对sql进行分类化管理，实现sql隔离，但注意的是当使用mapper
+代理方式开发，namespace有特殊重要的作用::namespace等于mapper接口地址
+-->
+<mapper namespace="com.mapper.MessageMapper">
+
+    <resultMap id="MessageResultMap" type="com.po.MessageCustom">
+        <id column="id_" property="id"/>
+        <result column="mes_" property="mes"/>
+    </resultMap>
+    <select id="findMessageById" parameterType="int" resultMap="MessageResultMap">
+        select id id_ ,mes mes_ from message where id=#{value}
+        <!--注意：使用代理的形式，简单类型中只能使用#{value}-->
+    </select>
+
+
+    <insert id="insertMessage"  parameterType="com.po.MessageVo">
+        <!--
+        第一种：主键自增型
+        mysql自增主键，执行insert提交之前自动生成一个自增主键，通过mysql函数last_insert_id()函数获取自增主键
+        将插入数据的主键返回，返回到User对象中
+        select last_insert_id():得到insert进去记录的主键值，只适用于自增主键
+        keyProperty：将查询到主键值设置到parameterType指定的对象的哪个属性
+        order：select last_insert_id（）执行顺序，相对于insert语句来说它的执行顺序
+        resultType:指定select last_insert_id()的结果类型
+         sql语句末尾不能加分号
+        这里若是在数据库中的表字段的id设置为了自增，则sql语句中就可以不用写id了，因为数据库中是自增的，写了id也是白写
+
+        useGeneratedKeys="true" keyProperty="id"
+        -->
+        <selectKey keyProperty="message.id" order="AFTER" resultType="java.lang.Integer">
+            select last_insert_id()
+        </selectKey>
+
+        insert into message(mes) values (#{message.mes})
+    </insert>
+
+</mapper>
