@@ -2,5 +2,5 @@ package com.po;
 
 public class ConflictTest {
     String name = "xiaoming";
-    int age = 908;
+    int age = 800;
 }
